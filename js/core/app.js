@@ -4,9 +4,10 @@
  * Alles hangt aan één globaal object `App`, zodat de site zonder build-stap
  * en rechtstreeks via file:// werkt (ES-modules worden daar geblokkeerd).
  * Dit bestand wordt als eerste geladen, meteen gevolgd door js/spellen.js,
- * dat zegt welk spel deze pagina is.
+ * dat zegt welk spel deze pagina is. Ook de service worker (sw.js) laadt die
+ * twee, voor de lijst spellen; daarom `self` en niet `window`.
  */
-window.App = {
+self.App = {
   sites: [],         // alle spellen van de site (js/spellen.js)
   site: null,        // het spel op deze pagina: titel, mascotte en opslag
   data: {},          // feiten en kaartgeometrie (js/data)

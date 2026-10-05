@@ -3,6 +3,7 @@
  * Het leerjaar wordt maar één keer gevraagd en daarna onthouden; met
  * "Ander leerjaar" kies je opnieuw. De onderwerpen zijn de spellen uit
  * App.sites (js/spellen.js), met de sterren die het kind er al haalde.
+ * Bovenaan staat ook de knop om de site als app te installeren (js/core/install.js).
  */
 (() => {
   const { el } = App.util;
@@ -45,7 +46,7 @@
         el('div', { class: 'hero-title' },
           el('span', { class: 'hero-icon', 'aria-hidden': 'true' }, '🎒'),
           el('div', {},
-            el('h1', {}, 'Oefenhoek'),
+            el('h1', {}, 'WeetjesBos.Be'),
             el('p', { class: 'hero-sub' }, 'Oefenen voor school, met sterren en stickers'))),
         el('div', { class: 'hero-stats' }, extra),
         el('div', { class: 'speech speech-home' },
@@ -55,7 +56,7 @@
   }
 
   function chooseGrade() {
-    screen('Hoi! In welk leerjaar zit jij? Dat vraag ik maar één keer.', null,
+    screen('Hoi! In welk leerjaar zit jij? Dat vraag ik maar één keer.', App.install.button(),
       el('div', { class: 'grade-grid' }, GRADES.map((grade, i) => {
         const count = sitesFor(grade).length;
         return el('button', {
@@ -71,7 +72,7 @@
   function chooseTopic(grade) {
     const sites = sitesFor(grade);
     screen(`Welkom in het ${label(grade)}! Kies een onderwerp. 📚`,
-      el('button', { class: 'btn btn-pill', type: 'button', onclick: chooseGrade }, '🔄 Ander leerjaar'),
+      [el('button', { class: 'btn btn-pill', type: 'button', onclick: chooseGrade }, '🔄 Ander leerjaar'), App.install.button()],
       el('div', { class: 'start-main' },
         el('h2', { class: 'start-heading' }, label(grade)),
         el('div', { class: 'topics' }, sites.map(topicCard))));

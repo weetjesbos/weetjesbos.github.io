@@ -6,6 +6,7 @@
  * kern de titel, mascotte en opslag. Wordt geladen direct na js/core/app.js.
  *
  * Een nieuw spel: voeg het hier toe en maak een pagina zoals tijdreizigers.html.
+ * De service worker (sw.js) neemt de pagina dan vanzelf op in de offline kopie.
  * Verander nooit een bestaande `storageKey`: daar staan de sterren van het kind.
  */
 App.sites = [
@@ -41,4 +42,5 @@ App.sites = [
   },
 ];
 
-App.site = App.sites.find((s) => s.id === document.body.dataset.spel) ?? null;
+// In de service worker (sw.js) is er geen document en dus geen eigen spel.
+App.site = App.sites.find((s) => s.id === self.document?.body.dataset.spel) ?? null;

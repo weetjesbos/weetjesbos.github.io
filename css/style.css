@@ -944,6 +944,9 @@ mark {
 .sticker-big { font-size: 3rem; animation: spin-in 1s ease 1.6s both; }
 .end-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 16px; }
 
+.install-help ol { text-align: left; font-size: 1.1rem; line-height: 1.4; padding-left: 1.4em; }
+.install-help li + li { margin-top: 8px; }
+
 .sticker-book { width: min(640px, 100%); }
 .sticker-grid {
   display: grid;
