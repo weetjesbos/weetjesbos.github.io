@@ -70,10 +70,16 @@ App.ui = {
    *   { ..., city: 'stad-namen' }             plus een speld met '?' op die stad
    *   { flag: 'nl' }                          vlag en naam van een buurland
    *   { emoji: '🏙️', text: 'Hasselt' }       groot plaatje met tekst (of een lange uitleg)
+   *   { node: element, reveal: fn }           een eigen plaatje, bv. een klok (App.clock);
+   *                                           reveal() toont er de uitleg bij het antwoord op
    * De kaart toont hier nooit gevonden namen: die zouden het antwoord verklappen.
    */
   showVisual(show, game) {
     if (!show) return null;
+    if (show.node) {
+      game.stage.append(show.node);
+      return null;
+    }
     if (show.map) {
       const map = game.map(show.map, { keepFound: false });
       if (show.region) map.mark(show.region, 'target');
@@ -117,6 +123,8 @@ App.ui = {
       node.style.fontSize = `${lo}px`;
     };
     new ResizeObserver(fit).observe(node);
+    // Het lettertype komt soms pas later binnen: dan verandert de tekst, maar niet de maat van node.
+    document.fonts?.ready.then(fit);
     fit();
     return fit;
   },

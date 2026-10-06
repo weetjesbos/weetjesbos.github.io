@@ -6,13 +6,20 @@
  *     pairs: [{ text: 'villa', target: 'groot Romeins huis' }, ...],
  *     count: 6,    // optioneel: zoveel paren per spel, willekeurig gekozen
  *     prompt: 'Sleep elk woord naar zijn uitleg.',
+ *     texts: { pick, wrong, reveal },   // optioneel: eigen zinnetjes, elk (woord) => tekst
  *   })
  *
  * Twee woorden met precies dezelfde uitleg mogen allebei op die uitleg. De
  * lijst met uitleg past zich aan de vrije ruimte aan (App.ui.fitText).
  */
-App.kinds.match = ({ pairs, count, prompt }) => (game) => {
+App.kinds.match = ({ pairs, count, prompt, texts }) => (game) => {
   const { el, shuffle, sample, wait } = App.util;
+  const say = {
+    pick: (text) => `Wat betekent **${text}**? Tik op de juiste uitleg.`,
+    wrong: (text) => `**${text}** betekent iets anders. Probeer nog eens!`,
+    reveal: (text) => `Kijk, de uitleg van **${text}** licht nu groen op!`,
+    ...texts,
+  };
   const chosen = count ? sample(pairs, count) : pairs;
   const mistakes = {};
   let selected = null;
@@ -67,7 +74,7 @@ App.kinds.match = ({ pairs, count, prompt }) => (game) => {
     tray.querySelectorAll('.is-selected').forEach((c) => c !== chip && c.classList.remove('is-selected'));
     chip.classList.toggle('is-selected');
     selected = chip.classList.contains('is-selected') ? chip : null;
-    if (selected) game.say(`Wat betekent **${chip.pair.text}**? Tik op de juiste uitleg.`);
+    if (selected) game.say(say.pick(chip.pair.text));
   }
 
   function tapSlot(slot) {
@@ -105,9 +112,9 @@ App.kinds.match = ({ pairs, count, prompt }) => (game) => {
     setTimeout(() => slot.node.classList.remove('is-wrong'), 700);
     if (mistakes[pair.text] >= 2) {
       slots.find((s) => !s.filled && s.target === pair.target).node.classList.add('is-reveal');
-      game.wrong(`Kijk, de uitleg van **${pair.text}** licht nu groen op!`);
+      game.wrong(say.reveal(pair.text));
     } else {
-      game.wrong(`**${pair.text}** betekent iets anders. Probeer nog eens!`);
+      game.wrong(say.wrong(pair.text));
     }
   }
 };

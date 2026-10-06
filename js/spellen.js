@@ -40,6 +40,21 @@ App.sites = [
     welcome: 'Hoi! Ik ben Otto de uil. 🕰️ Reis met mij door de tijd en leer alle woorden van je werkkatern!',
     champion: 'Alle sterren! Jij bent helemaal klaar voor de toets! 🎓',
   },
+  {
+    id: 'klok',
+    page: 'klok.html',
+    grade: 5,
+    subject: 'Wiskunde',
+    topic: 'Klok lezen en rekenen met tijd',
+    color: '#2ec27e',
+    title: 'Tik Tak Tijd',
+    subtitle: 'Klok lezen • rekenen met tijd',
+    storageKey: 'tik-tak-tijd/v1',
+    mascot: '🐰',
+    heroIcon: () => App.util.el('span', { class: 'hero-icon', 'aria-hidden': 'true' }, '⏰'),
+    welcome: 'Hoi! Ik ben Rik het konijn. ⏰ Ik ben altijd te laat... Help jij me met de klok en met rekenen met tijd?',
+    champion: 'Alle sterren! Jij bent een echte klokkampioen! Nu ben ik nooit meer te laat! 🏆',
+  },
 ];
 
 // In de service worker (sw.js) is er geen document en dus geen eigen spel.
