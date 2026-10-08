@@ -32,20 +32,27 @@ App.tijd = (() => {
   }
 
   // Eén gedeelde bouwer: bij een fout noemt Otto de gekozen optie.
-  function choice(prompt, answer, options, explain, text = 'Denk aan je werkblad.') {
+  function choice(prompt, answer, options, explain, text = 'Denk aan je werkblad.', ordered = false) {
+    const answers = [...new Set([...options, answer])];
     return {
       type: 'choice', long: true, prompt,
       show: { emoji: '📜', text },
-      options: shuffle([...new Set([answer, ...options])]), answer, explain,
+      options: ordered ? answers : shuffle(answers), answer, explain,
       whyNot: (option) => `Je koos **${option}**. ${explain}`,
     };
+  }
+
+  // Vóór Christus telt af: een hogere eeuw of een hoger jaartal ligt vroeger.
+  function chronological(options) {
+    const position = (text) => Number(text.match(/\d+/)[0]) * (text.includes('v.C.') ? -1 : 1);
+    return [...options].sort((a, b) => position(a) - position(b));
   }
 
   function eraQuestion(text, prompt) {
     const { eras } = App.data.tijd;
     const era = App.data.tijd.era(text.era);
-    return choice(prompt, era.name, eras.filter((e) => e.id !== era.id).map((e) => e.name),
-      'Vergelijk de kenmerken met de zes tijdvakken op je overzicht.', text.text);
+    return choice(prompt, era.name, eras.map((e) => e.name),
+      'Vergelijk de kenmerken met de zes tijdvakken op je overzicht.', text.text, true);
   }
 
   function history() {
@@ -60,19 +67,20 @@ App.tijd = (() => {
       const first = before ? century * 100 : (century - 1) * 100 + 1;
       const last = before ? (century - 1) * 100 + 1 : century * 100;
       return choice(`In welke eeuw ligt **${yearText}**?`, answer,
-        [label(century - 1), label(century + 1), before ? label(century).replace(' v.C.', '') : `${answer} v.C.`],
+        chronological([answer, label(century - 1), label(century + 1), before ? label(century).replace(' v.C.', '') : `${answer} v.C.`]),
         `${answer} loopt van ${first}${before ? ' v.C.' : ''} tot ${last}${before ? ' v.C.' : ''}. ${before ? 'Vóór Christus tellen de jaren af.' : 'Een eeuw begint op een jaar dat eindigt op 01 en eindigt op een honderdtal.'}`,
-        yearText);
+        yearText, true);
     });
     const ranges = [
       ['11de eeuw', '1001 tot 1100', ['1000 tot 1099', '1101 tot 1200'], 'De 10de eeuw eindigt in 1000; de 11de begint in 1001.'],
       ['22ste eeuw', '2101 tot 2200', ['2100 tot 2199', '2201 tot 2300'], 'De 21ste eeuw eindigt in 2100; de 22ste begint in 2101.'],
       ['6de eeuw v.C.', '600 v.C. tot 501 v.C.', ['501 v.C. tot 600 v.C.', '601 v.C. tot 700 v.C.'], 'Vóór Christus tellen we af: eerst 600 v.C., als laatste 501 v.C.'],
-    ].map(([name, answer, wrong, explain]) => choice(`Wat zijn het eerste en laatste jaar van de **${name}**?`, answer, wrong, explain, name));
+    ].map(([name, answer, wrong, explain]) => choice(`Wat zijn het eerste en laatste jaar van de **${name}**?`, answer,
+      chronological([answer, ...wrong]), explain, name, true));
     return {
       periods: eras.map((e) => choice(`Welke jaartallen horen op je overzicht bij **${e.name}**?`, e.period,
-        eras.filter((x) => x.id !== e.id).map((x) => x.period),
-        'Let op de begin- en eindjaren van elk tijdvak.', e.name)),
+        eras.map((x) => x.period),
+        'Let op de begin- en eindjaren van elk tijdvak.', e.name, true)),
       people: eras.map((e) => eraQuestion({ text: e.people, era: e.id }, 'In welk tijdvak leven deze personages op je werkblad?')),
       life: eras.flatMap((e) => App.util.sample(life.filter((x) => x.era === e.id), 2))
         .map((item) => eraQuestion(item, 'Bij welk tijdvak staat dit kenmerk op je overzicht?')),
