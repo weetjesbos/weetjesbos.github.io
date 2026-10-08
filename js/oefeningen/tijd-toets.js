@@ -1,4 +1,4 @@
-/* Vroeger en nu: de proeftoets, met alle woorden van het werkblad. */
+/* Vroeger en nu: de proeftoets, met alle woorden en elk nieuw onderdeel van de herhaling. */
 (() => {
   const { words } = App.data.tijd;
   const { shuffle, pick } = App.util;
@@ -11,8 +11,11 @@
     title: 'De proeftoets',
     emoji: '📝',
     sticker: '🐉',
-    description: `Alle ${words.length} woorden door elkaar, zoals op de toets met gesloten boek.`,
+    description: `Alle ${words.length} woorden, plus tijdvakken, personages, leven, eeuwen en verklaringen.`,
     // Elk woord één keer, telkens op een andere manier gevraagd.
-    questions: () => shuffle(words).map((w) => pick([App.tijd.meaning, App.tijd.word, App.tijd.letters])(w)),
+    questions: () => shuffle([
+      ...words.map((w) => pick([App.tijd.meaning, App.tijd.word, App.tijd.letters])(w)),
+      ...Object.values(App.tijd.history()).map((questions) => pick(questions)),
+    ]),
   });
 })();

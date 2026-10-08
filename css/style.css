@@ -946,6 +946,9 @@ mark {
 
 /* ============ Spel: Tijdreizigers ============ */
 .theme-tijd { --sky-1: #d9ccff; --sky-2: #ffedcf; }
+/* Zes tijdvakken naast elkaar: ook lange schoolnamen en gevonden kaartjes passen. */
+.theme-tijd .sort-name { overflow-wrap: anywhere; }
+.theme-tijd .sort-chip { white-space: normal; overflow-wrap: anywhere; }
 .hero-icon {
   flex: none;
   font-size: clamp(2.2rem, 8vmin, 4.2rem);
